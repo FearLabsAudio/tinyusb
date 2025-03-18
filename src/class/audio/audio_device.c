@@ -2280,8 +2280,9 @@ static bool audiod_set_fb_params_freq(audiod_function_t *audio, uint32_t sample_
 
 static void audiod_fb_fifo_count_update(audiod_function_t *audio, uint16_t lvl_new) {
   /* Low-pass (averaging) filter */
-  uint32_t lvl = audio->feedback.compute.fifo_count.fifo_lvl_avg;
-  lvl = (uint32_t) (((uint64_t) lvl * 63 + ((uint32_t) lvl_new << 16)) >> 6);
+  // uint32_t lvl = audio->feedback.compute.fifo_count.fifo_lvl_avg;
+  // lvl = (uint32_t) (((uint64_t) lvl * 15 + ((uint32_t) lvl_new << 16)) >> 4);
+  uint32_t lvl = (uint32_t)(lvl_new << 16);
   audio->feedback.compute.fifo_count.fifo_lvl_avg = lvl;
 
   uint32_t const ff_lvl = lvl >> 16;
@@ -2291,9 +2292,9 @@ static void audiod_fb_fifo_count_update(audiod_function_t *audio, uint16_t lvl_n
   uint32_t feedback;
 
   if (ff_lvl < ff_thr) {
-    feedback = audio->feedback.compute.fifo_count.nom_value + (ff_thr - ff_lvl) * rate[0];
+    feedback = audio->feedback.compute.fifo_count.nom_value + (ff_thr - ff_lvl) * (rate[0]>>1);
   } else {
-    feedback = audio->feedback.compute.fifo_count.nom_value - (ff_lvl - ff_thr) * rate[1];
+    feedback = audio->feedback.compute.fifo_count.nom_value - (ff_lvl - ff_thr) * (rate[1]>>1);
   }
 
   if (feedback > audio->feedback.max_value) feedback = audio->feedback.max_value;
