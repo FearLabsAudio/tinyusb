@@ -2292,9 +2292,9 @@ static void audiod_fb_fifo_count_update(audiod_function_t *audio, uint16_t lvl_n
   uint32_t feedback;
 
   if (ff_lvl < ff_thr) {
-    feedback = audio->feedback.compute.fifo_count.nom_value + (ff_thr - ff_lvl) * (rate[0]>>1);
+    feedback = audio->feedback.compute.fifo_count.nom_value + (ff_thr - ff_lvl) * (rate[0]>>2);
   } else {
-    feedback = audio->feedback.compute.fifo_count.nom_value - (ff_lvl - ff_thr) * (rate[1]>>1);
+    feedback = audio->feedback.compute.fifo_count.nom_value - (ff_lvl - ff_thr) * (rate[1]>>2);
   }
 
   if (feedback > audio->feedback.max_value) feedback = audio->feedback.max_value;
